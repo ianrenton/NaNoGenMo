@@ -27,5 +27,6 @@ FAQ
 * **So it's completely unintelligible?**<br/>The source material is Fanfiction.net. Garbage in, garbage out. (I jest. Half these people are better writers than me anyway.)
 * **Will I see adult content?**<br/>Depends which Fanfiction.net index page you give it to work with. I think ff.net bans NC-17 material, so it's probably not going to be too graphic.
 * **Do the generated stories infringe copyright?**<br/>Not a clue. I think there are more important reasons why you wouldn't publish the output.
+* **Does running this violate Fanfiction.net's Terms of Service?**<br/>Yep. If you're an actual Fanfiction.net user you probably want to log out before running this. I take no responsibility if you get banned!
 * **The generated text is full of weird half-sentences, what gives?**<br/>The regular expression parser assumes the Fanfiction.net authors have a proper grasp of punctuation and grammar. Regrettably this is not always the case.
 * **Why is some of it in a foreign language?**<br/>NaNoGenMo doesn't discriminate, man! It just uses the stories you point it at. You can generate a story entirely in another language by using ff.net's search.

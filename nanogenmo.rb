@@ -21,6 +21,10 @@ require 'redcarpet'
 # http://www.fanfiction.net/u/1234567/UserName
 INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 
+# A list of words which, if present in a sentence, will disqualify it from use in
+# the generator. Used to catch sentences which aren't part of the actual text.
+BANNED_WORDS = ['Chapter', 'review', 'A/N', 'Note']
+
 #########################################
 #         WEB SCRAPING CONFIG           #
 #########################################
@@ -28,7 +32,7 @@ INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
 # without spending ages scraping data from the web again) you can set this to "false".
-FETCH_LIVE_DATA = false
+FETCH_LIVE_DATA = true
 
 # Stop after finding this many pages to avoid huge data sets
 MAX_PAGES = 100
@@ -55,7 +59,7 @@ DIALOGUE_RATE = 0.2
 # Maximum number of sentences per paragraph
 MAX_SENT_PER_PARA = 6
 
-# Maximum number of sentences / lines in a dialogue section.
+# Maximum number of sentences / lines in a dialogue sequence.
 MAX_SENT_PER_DIALOGUE = 6
 
 #########################################
@@ -69,12 +73,13 @@ USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux armv7l; rv:24.0) Gecko/20100101 Fi
 DATA_CACHE_FILE_NAME = 'cache.yaml'
 STORY_MARKDOWN_FILE_NAME = 'story.md'
 STORY_HTML_FILE_NAME = 'story.html'
-# Tags, IDs, classes and regexes to find and extract stories, pages, and sentences.
+# Element IDs, classes and regexes to find and extract stories, pages, and sentences.
 STORY_LINK_CLASS = 'stitle'
 CHAPTER_SELECT_ID = 'chap_select'
 STORY_TEXT_ID = 'storytext'
 SENTENCE_REGEX = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/
-
+QUOTED_TEXT_REGEX = /"([^"]*)"/
+STRIP_FROM_TITLE_REGEX = /[\,\.\"]/
 
 #########################################
 #           CODE STARTS HERE            #
@@ -157,20 +162,25 @@ if FETCH_LIVE_DATA
 				# Take the contents of each <p> element, remove linebreaks and scan for sentences
 				tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
 				tmpSentences.each_with_index do |tmpSentence, i|
-					if (pi == 0) && (i == 0)
-					  sentences[:startChapters] << tmpSentence
-					elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
-					  sentences[:endChapters] << tmpSentence
-					elsif tmpSentence.include? '"'
-					  sentences[:dialogue] << tmpSentence
-					elsif tmpSentences.size == 1
-					   sentences[:solitary] << tmpSentence
-					elsif i == 0
-					   sentences[:startParagraphs] << tmpSentence
-					elsif i == tmpSentences.size - 1
-					   sentences[:endParagraphs] << tmpSentence
-					else
-					   sentences[:midParagraphs] << tmpSentence
+				  # Check for 'banned' words, only proceed if they are not present
+				  if !(BANNED_WORDS.any? { |word| tmpSentence.include?(word) })
+				    # Based on the sentence's position and content, decide what type it is and
+				    # thus into which bucket it goes.
+						if (pi == 0) && (i == 0)
+							sentences[:startChapters] << tmpSentence
+						elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
+							sentences[:endChapters] << tmpSentence
+						elsif tmpSentence.include? '"'
+							sentences[:dialogue] << tmpSentence
+						elsif tmpSentences.size == 1
+							 sentences[:solitary] << tmpSentence
+						elsif i == 0
+							 sentences[:startParagraphs] << tmpSentence
+						elsif i == tmpSentences.size - 1
+							 sentences[:endParagraphs] << tmpSentence
+						else
+							 sentences[:midParagraphs] << tmpSentence
+						end
 					end
 				end
 			end
@@ -212,9 +222,9 @@ print 'Writing a story called... '
 title = ''
 while title == ''
 	tmpTitle = sentences[:dialogue][rand(sentences[:dialogue].size - 1)]
-	quotedSections = tmpTitle.scan(/"([^"]*)"/)
+	quotedSections = tmpTitle.scan(QUOTED_TEXT_REGEX)
 	if !quotedSections.nil? && !quotedSections[0].nil?
-	  title = quotedSections[0][0].gsub(/[\,\.\"]/, '')
+	  title = quotedSections[0][0].gsub(STRIP_FROM_TITLE_REGEX, '')
 	end
 end
 story << title << "\n" << "="*title.length << "\n\n"
