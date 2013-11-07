@@ -8,6 +8,7 @@ require 'rubygems'
 require 'nokogiri'
 require 'open-uri'
 require 'yaml'
+require 'redcarpet'
 
 #########################################
 #            SOURCE MATERIAL            #
@@ -27,7 +28,7 @@ INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
 # without spending ages scraping data from the web again) you can set this to "false".
-FETCH_LIVE_DATA = true
+FETCH_LIVE_DATA = false
 
 # Stop after finding this many pages to avoid huge data sets
 MAX_PAGES = 100
@@ -249,5 +250,9 @@ print 'Saving file...'
 File.open(STORY_MARKDOWN_FILE_NAME, 'w') {|f| f.write(story) }
 print " done.\n"
 
-print "\n\n\n"
-print story
+# Generate some nicer-looking HTML
+print 'Generating HTML...'
+markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
+html = markdown.render(story)
+File.open(STORY_HTML_FILE_NAME, 'w') {|f| f.write(html) }
+print " done.\n"

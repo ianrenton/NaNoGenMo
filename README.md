@@ -11,7 +11,7 @@ Usage
 -----
 
 * Only one file is important: `nanogenmo.rb`. Download it, or clone the repo, whatever you feel like.
-* You will need the `nokogiri` gem installed. This can be a pain in the arse on some platforms. Google it.
+* You will need the `nokogiri` and `redcarpet` gems installed. These require native extensions, which can be a pain in the arse on some platforms. Google it if you have problems.
 * Edit `nanogenmo.rb` in your choice of editor, and look at the configuration options at the top. You'll want to set `INDEX_URL` to a list of stories on Fanfiction.net that you want to generate your story from. Some examples are given.
 * Other configuration options are provided with comments. You may want to generate a story of a different length (`WORD_GOAL`), create a larger data set (`MAX_PAGES`), etc.
 * Run the script using `ruby nanogenmo.rb`. Depending on your options, connection speed and the whim of the Fanfiction.net servers, this may take a long time.
