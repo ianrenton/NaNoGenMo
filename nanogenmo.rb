@@ -16,7 +16,7 @@ require 'yaml'
 # http://www.fanfiction.net/tv/Doctor-Who/
 # http://www.fanfiction.net/search.php?keywords=cupcakes&ready=1&type=story
 # http://www.fanfiction.net/u/1234567/UserName
-INDEX_URL = 'http://www.fanfiction.net/search.php?keywords=obscure+phrase&ready=1&type=story'
+INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
@@ -37,7 +37,11 @@ STORY_LINK_CLASS = 'stitle'
 CHAPTER_SELECT_ID = 'chap_select'
 SENTENCE_REGEX = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/
 # Tweaks
-WORD_GOAL = 50000
+WORD_GOAL = 1000
+SOLITARY_RATE = 0.1 # For every 1 proper paragraph, there will be this many solitary (one-sentence) paragraphs.
+DIALOGUE_RATE = 0.2 # For every 1 proper paragraph, there will be this many dialogue sequences.
+MAX_SENT_PER_PARA = 6 # Maximum number of sentences per paragraph
+MAX_SENT_PER_DIALOGUE = 6 # Maximum number of sentences / lines in a dialogue section.
 
 ######### CODE STARTS HERE ##########
 
@@ -95,10 +99,16 @@ if FETCH_LIVE_DATA
     print '.'
   	pageHTML = Nokogiri::HTML(open(pageURL, 'User-Agent' => USER_AGENT))
 		paragraphs = pageHTML.css("p")
-		paragraphs.each do |para|
-			tmpSentences = para.text.scan(SENTENCE_REGEX)
+		paragraphs.each_with_index do |para, pi|
+		  # Take the contents of each <p> element, remove linebreaks and scan for sentences
+			tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
 			tmpSentences.each_with_index do |tmpSentence, i|
-			  if tmpSentence.include? '"'
+			print "#{tmpSentence}\n--\n"
+			  if (pi == 0) && (i == 0)
+			    sentences[:startChapters] << tmpSentence
+			  elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
+			    sentences[:endChapters] << tmpSentence
+			  elsif tmpSentence.include? '"'
 			    sentences[:dialogue] << tmpSentence
 			  elsif tmpSentences.size == 1
 			     sentences[:solitary] << tmpSentence
@@ -138,4 +148,51 @@ end
 
 
 # Start generating. If we get here, we know that sentences has contents that we can use.
-# TODO
+story = ''
+print 'Generating story'
+
+# Start with an opening sentence
+story << sentences[:startChapters][rand(sentences[:startChapters].size - 1)] << "\n\n"
+
+# Keep going until word count goal is reached
+while story.split.size < WORD_GOAL
+  print '.'
+  # Decide what type of section we are going into - a proper paragraph (at least 2 
+  # sentences), a solitary sentence, or a dialogue section.
+  roll = rand * (1 + SOLITARY_RATE + DIALOGUE_RATE)
+  if roll < SOLITARY_RATE
+    # Solitary. Pick a solitary paragraph and concatenate it to the story.
+    story << sentences[:solitary][rand(sentences[:solitary].size - 1)] << "\n\n"
+  elsif roll < (SOLITARY_RATE + DIALOGUE_RATE)
+    # Dialogue. First work out how long the dialogue should be.
+    dialogueLength = rand(MAX_SENT_PER_DIALOGUE)
+    # Now add that many dialogue paragraphs.
+    for i in 0..dialogueLength
+      story << sentences[:dialogue][rand(sentences[:dialogue].size - 1)] << "\n\n"
+    end
+  else
+    # Normal Paragraph. First work out how long the paragraph should be. Must be at
+    # least 2
+    paragraphLength = rand(MAX_SENT_PER_PARA - 1) + 1
+    # Now add a beginning sentence, the right number of middle sentences, and an end
+    # sentence.
+    story << sentences[:startParagraphs][rand(sentences[:startParagraphs].size - 1)] << ' '
+    for i in 0..paragraphLength-2
+      story << sentences[:midParagraphs][rand(sentences[:midParagraphs].size - 1)] << ' '
+    end
+    story << sentences[:endParagraphs][rand(sentences[:endParagraphs].size - 1)] << "\n\n"
+  end
+end
+
+# Finish with a closing sentence
+story << sentences[:endChapters][rand(sentences[:endChapters].size - 1)] << "\n\n"
+
+print " wrote #{story.split.size} words!\n"
+
+# Save the file as markdown
+print 'Saving file...'
+File.open(STORY_MARKDOWN_FILE_NAME, 'w') {|f| f.write(story) }
+print " done.\n"
+
+print "\n\n\n"
+print story
