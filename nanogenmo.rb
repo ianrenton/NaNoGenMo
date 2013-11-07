@@ -9,7 +9,9 @@ require 'nokogiri'
 require 'open-uri'
 require 'yaml'
 
-######### CONFIGURATION ##########
+#########################################
+#            SOURCE MATERIAL            #
+#########################################
 
 # Pick a Fanfiction.net page that has links to stories. This can be a category, user or
 # search page, e.g.
@@ -18,23 +20,52 @@ require 'yaml'
 # http://www.fanfiction.net/u/1234567/UserName
 INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 
+#########################################
+#         WEB SCRAPING CONFIG           #
+#########################################
+
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
 # without spending ages scraping data from the web again) you can set this to "false".
-FETCH_LIVE_DATA = true
+FETCH_LIVE_DATA = false
 
-####### Less common config options ########
+# Stop after finding this many pages to avoid huge data sets
+MAX_PAGES = 100
+
+# Delay between requesting pages from fanfiction.net, to be nice. Seconds.
+# The default 5 seconds makes data collection take a LONG TIME. Smaller values are
+# fine right up until fanfiction.net IP-bans you :(
+PAGE_DELAY = 5
+
+#########################################
+#       STORY GENERATION CONFIG         #
+#########################################
+
+# Number of words to aim for.
+WORD_GOAL = 1000
+
+# For every 1 proper paragraph, there will be this many solitary (one-sentence)
+# paragraphs.
+SOLITARY_RATE = 0.1
+
+# For every 1 proper paragraph, there will be this many dialogue sequences.
+DIALOGUE_RATE = 0.2
+
+# Maximum number of sentences per paragraph
+MAX_SENT_PER_PARA = 6
+
+# Maximum number of sentences / lines in a dialogue section.
+MAX_SENT_PER_DIALOGUE = 6
+
+#########################################
+#            GLOBAL DEFINES             #
+#   You shouldn't need to edit these    #
+#########################################
 
 # Fanfiction.net base URL for following relative links
 BASE_URL = 'http://www.fanfiction.net'
 # Fake a user agent to avoid getting 403 errors
 USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux armv7l; rv:24.0) Gecko/20100101 Firefox/24.0'
-# Stop after finding this many pages to avoid huge data sets
-MAX_PAGES = 100
-# Delay between requesting pages from fanfiction.net, to be nice. Seconds.
-# The default 5 seconds makes data collection take a LONG TIME. Smaller values are
-# fine right up until fanfiction.net IP-bans you :(
-PAGE_DELAY = 5
 # Intermediate and output file names to use
 DATA_CACHE_FILE_NAME = 'cache.yaml'
 STORY_MARKDOWN_FILE_NAME = 'story.md'
@@ -44,16 +75,11 @@ STORY_LINK_CLASS = 'stitle'
 CHAPTER_SELECT_ID = 'chap_select'
 STORY_TEXT_ID = 'storytext'
 SENTENCE_REGEX = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/
-# Tweaks
-WORD_GOAL = 1000
-SOLITARY_RATE = 0.1 # For every 1 proper paragraph, there will be this many solitary (one-sentence) paragraphs.
-DIALOGUE_RATE = 0.2 # For every 1 proper paragraph, there will be this many dialogue sequences.
-MAX_SENT_PER_PARA = 6 # Maximum number of sentences per paragraph
-MAX_SENT_PER_DIALOGUE = 6 # Maximum number of sentences / lines in a dialogue section.
 
 
-######### CODE STARTS HERE ##########
-
+#########################################
+#           CODE STARTS HERE            #
+#########################################
 
 # If we're fetching live data, as opposed to reading an existing file...
 if FETCH_LIVE_DATA
