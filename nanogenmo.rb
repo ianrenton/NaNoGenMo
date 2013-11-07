@@ -11,8 +11,12 @@ require 'yaml'
 
 ######### CONFIGURATION ##########
 
-# Pick a Fanfiction.net page that has links to stories
-INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
+# Pick a Fanfiction.net page that has links to stories. This can be a category, user or
+# search page, e.g.
+# http://www.fanfiction.net/tv/Doctor-Who/
+# http://www.fanfiction.net/search.php?keywords=cupcakes&ready=1&type=story
+# http://www.fanfiction.net/u/1234567/UserName
+INDEX_URL = 'http://www.fanfiction.net/search.php?keywords=obscure+phrase&ready=1&type=story'
 
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
@@ -24,16 +28,15 @@ FETCH_LIVE_DATA = true
 BASE_URL = 'http://www.fanfiction.net'
 # Fake a user agent to avoid getting 403 errors
 USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux armv7l; rv:24.0) Gecko/20100101 Firefox/24.0'
-# File names to use
+# Intermediate and output file names to use
 DATA_CACHE_FILE_NAME = 'cache.yaml'
-STORY_FILE_NAME = 'story.txt'
+STORY_MARKDOWN_FILE_NAME = 'story.md'
+STORY_HTML_FILE_NAME = 'story.html'
 # Tags, IDs, classes and regexes to find and extract stories, pages, and sentences.
 STORY_LINK_CLASS = 'stitle'
 CHAPTER_SELECT_ID = 'chap_select'
-PARAGRAPH_TAG = 'p'
-SENTENCE_REGEX = '' # TODO
+SENTENCE_REGEX = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/
 # Tweaks
-MIN_WORDS_PER_SENTENCE = 4
 WORD_GOAL = 50000
 
 ######### CODE STARTS HERE ##########
@@ -82,11 +85,34 @@ if FETCH_LIVE_DATA
 		:startParagraphs => [],
 		:midParagraphs => [],
 		:endParagraphs => [],
+		:solitary => [],
 		:dialogue => []
 	}
 	
 	# For each page URL, load the page and extract sentences.
-	# TODO
+	print 'Extracting sentences'
+  pageURLs.each do |pageURL|
+    print '.'
+  	pageHTML = Nokogiri::HTML(open(pageURL, 'User-Agent' => USER_AGENT))
+		paragraphs = pageHTML.css("p")
+		paragraphs.each do |para|
+			tmpSentences = para.text.scan(SENTENCE_REGEX)
+			tmpSentences.each_with_index do |tmpSentence, i|
+			  if tmpSentence.include? '"'
+			    sentences[:dialogue] << tmpSentence
+			  elsif tmpSentences.size == 1
+			     sentences[:solitary] << tmpSentence
+			  elsif i == 0
+			     sentences[:startParagraphs] << tmpSentence
+			  elsif i == tmpSentences.size - 1
+			     sentences[:endParagraphs] << tmpSentence
+			  else
+			     sentences[:midParagraphs] << tmpSentence
+			  end
+			end
+		end
+  end
+  print " #{sentences[:startChapters].size + sentences[:endChapters].size + sentences[:startParagraphs].size + sentences[:midParagraphs].size + sentences[:endParagraphs].size + sentences[:solitary].size + sentences[:dialogue].size} found.\n"
 	
 	# Serialise the data to disk for later use
 	print "Saving data to #{DATA_CACHE_FILE_NAME}..."
@@ -101,7 +127,7 @@ else
 		print "Loading data from #{DATA_CACHE_FILE_NAME}..."
 		serialisedSentences = File.read(DATA_CACHE_FILE_NAME)
 		sentences = YAML::load(serialisedSentences)
-		print " Done.\n"
+		print " #{sentences[:startChapters].size + sentences[:endChapters].size + sentences[:startParagraphs].size + sentences[:midParagraphs].size + sentences[:endParagraphs].size + sentences[:solitary].size + sentences[:dialogue].size} sentences loaded.\n"
 	else
 	  # No file, so error out
 		print "FETCH_LIVE_DATA was set to 'false' but a data file named #{DATA_CACHE_FILE_NAME} could not be found. This means there is no source of data for the script to use. Check your configuration.\n"
@@ -109,6 +135,7 @@ else
 	end
 
 end
+
 
 # Start generating. If we get here, we know that sentences has contents that we can use.
 # TODO
