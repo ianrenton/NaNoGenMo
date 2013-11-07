@@ -27,7 +27,7 @@ INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
 # without spending ages scraping data from the web again) you can set this to "false".
-FETCH_LIVE_DATA = false
+FETCH_LIVE_DATA = true
 
 # Stop after finding this many pages to avoid huge data sets
 MAX_PAGES = 100
@@ -62,8 +62,6 @@ MAX_SENT_PER_DIALOGUE = 6
 #   You shouldn't need to edit these    #
 #########################################
 
-# Fanfiction.net base URL for following relative links
-BASE_URL = 'http://www.fanfiction.net'
 # Fake a user agent to avoid getting 403 errors
 USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux armv7l; rv:24.0) Gecko/20100101 Firefox/24.0'
 # Intermediate and output file names to use
@@ -89,8 +87,12 @@ if FETCH_LIVE_DATA
 	sleep(PAGE_DELAY)
 	storyLinkTags = indexHTML.css("a.#{STORY_LINK_CLASS}")
 	storyURLs = []
+	# Work out the base URL (fanfiction.net) to append to relative links
+	uri = URI.parse(INDEX_URL)
+  baseURL = "#{uri.scheme}://#{uri.host}"
+  # Compile a list of all the links to stories
 	storyLinkTags.each do |tag|
-		storyURLs << BASE_URL + tag['href']
+		storyURLs << baseURL + tag['href']
 	end
 	print " #{storyURLs.size} found.\n"
 
