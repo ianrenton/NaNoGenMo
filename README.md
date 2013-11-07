@@ -18,15 +18,17 @@ Usage
 * Your story will be saved to `story.md` (Markdown format) and `story.html` (HTML format).
 * Read and enjoy!
 
-* If you have run the script previously, you will have a `cache.yaml` file saved which contains all the data scrapted from Fanfiction.net. If you want to tweak the story generation parameters but use the same data set (saving a shitload of time) you can set `FETCH_LIVE_DATA = true`) in the script.
+* If you have run the script previously, you will have a `cache.yaml` file saved which contains all the data scraped from Fanfiction.net. If you want to tweak the story generation parameters but use the same data set (saving a shitload of time) you can set `FETCH_LIVE_DATA = true`) in the script.
 
 FAQ
 ---
 
 * **What kind of stories does this generate?**<br/>It's like viagra spammers decided to write about Harry Potter's secret romances.
-* **So it's completely unintelligible?**<br/>The source material is Fanfiction.net. Garbage in, garbage out. (I jest. Half these people are better writers than me anyway.)
+* **So it's completely unintelligible?**<br/>The source material is Fanfiction.net. Garbage in, garbage out. (Only joking :)
 * **Will I see adult content?**<br/>Depends which Fanfiction.net index page you give it to work with. I think ff.net bans NC-17 material, so it's probably not going to be too graphic.
 * **Do the generated stories infringe copyright?**<br/>Not a clue. I think there are more important reasons why you wouldn't publish the output.
-* **Does running this violate Fanfiction.net's Terms of Service?**<br/>Yep. If you're an actual Fanfiction.net user you probably want to log out before running this. I take no responsibility if you get banned!
+* **Does running this violate Fanfiction.net's Terms of Service?**<br/>Yep. If you're an actual Fanfiction.net user you probably want to log out before running this. I take no responsibility if you get banned.
 * **The generated text is full of weird half-sentences, what gives?**<br/>The regular expression parser assumes the Fanfiction.net authors have a proper grasp of punctuation and grammar. Regrettably this is not always the case.
-* **Why is some of it in a foreign language?**<br/>NaNoGenMo doesn't discriminate, man! It just uses the stories you point it at. You can generate a story entirely in another language by using ff.net's search.
+* **Why is some of it in a foreign language?**<br/>NaNoGenMo doesn't discriminate, man! It just uses the stories you point it at. If you want, you can generate a story entirely in another language by using the results of ff.net's advanced search as the input.
+* **What's the best out-of-context sentence you've seen it add to a story?**<br/>"a slightly confusing fishnet-esque body-covering suit."
+* **And the best auto-generated title?**<br/>"Oh my God this thing is—".

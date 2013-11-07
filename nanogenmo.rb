@@ -32,7 +32,7 @@ BANNED_WORDS = ['Chapter', 'review', 'A/N', 'Note']
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
 # without spending ages scraping data from the web again) you can set this to "false".
-FETCH_LIVE_DATA = true
+FETCH_LIVE_DATA = false
 
 # Stop after finding this many pages to avoid huge data sets
 MAX_PAGES = 100
