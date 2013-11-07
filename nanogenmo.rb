@@ -205,8 +205,22 @@ end
 
 # Start generating. If we get here, we know that sentences has contents that we can use.
 story = ''
-print 'Generating story'
 
+# Write a title. Steal a line of dialog so we have something 'punchy' (or just weird)
+# Underline it in Markdown style.
+print 'Writing a story called... '
+title = ''
+while title == ''
+	tmpTitle = sentences[:dialogue][rand(sentences[:dialogue].size - 1)]
+	quotedSections = tmpTitle.scan(/"([^"]*)"/)
+	if !quotedSections.nil? && !quotedSections[0].nil?
+	  title = quotedSections[0][0].gsub(/[\,\.\"]/, '')
+	end
+end
+story << title << "\n" << "="*title.length << "\n\n"
+print "\"#{title}\".\n"
+
+print 'Generating text.'
 # Start with an opening sentence
 story << sentences[:startChapters][rand(sentences[:startChapters].size - 1)] << "\n\n"
 
