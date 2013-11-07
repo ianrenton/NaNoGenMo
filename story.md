@@ -1,82 +1,68 @@
-That Obscure Object of Desire – Cet Obscur Objet du Désire
+Dear Melody,
 
-La jeune fille
+20 looked around at the seventeen hours and five square miles that had always been her home and felt a sliver of fear. Amy grinned, coming out from behind her desk to run toward him and hug him tightly.
 
-"Why is it that no matter what I put on, it always looks like crap?"
+'Okay, so, green ghost thing inside a TARDIS, caves that aren't caves and people going missing?' She had her Koschei and it wasn't him.
 
-"Why is it that no matter what I put on, it always looks like crap?"
+Hopefully, he wouldn't be hearing a knock at the curtain. We're coming for you, I swear. the first mate echoed, mockingly as Olivia pulled Toby back to wrap an arm around his shoulders. Olivia asked as Alex watched the candles.
 
-"You're going to look so
+'Yes, right. That sort of thing isn't easily forgotten. He started laughing.
 
-"You're going to look so
+'Maybe what?'
 
-"Why is it that no matter what I put on, it always looks like crap?"
+'Here! Go! She was experimenting all the time, pushing things, taking mad risks. He wasn't sure where the comforting words had come from, but he was unutterably grateful for his brain having kicked out something useful this time.
 
-her wonder, as she cocked her head to the side in an intensive listening manner…what...lied…beneath?
+Olivia cautiously stepped toward the tub at the base of the vat of Flesh, pulling the Doctor with her by the hand. Rory asked Olivia. Professor River song. Rory demanded.
 
-Mr. Most men didn't. She was new and therefore untrustworthy. When Cecile finally found
+Olivia danced around the console to Muse's Supermassive Black Hole as the Doctor stood staring at the scanner, Amy and Rory near the TARDIS door, playing darts. Olivia snapped, standing tall and placing her hands on her hips as he looked up at her.
 
-patient in the history of the ward. Perhaps some of his fear came from the threat of inexperienced youth? Plus, she was excited. She was new and therefore untrustworthy. Sharona Fleming had decided to return to New York City to attend their prestigious police academy. Cecile's mother had died (another case of suicide perhaps, the details surrounding the death left much to
+'I think I might be,' she said. They stood, silent for a moment in the hollow moon. Things to do, people to see. So, do you want that more than you want to kill one man? she wondered, letting him pull her left hand into his left hand as he stepped behind her.
 
-"Why is it that no matter what I put on, it always looks like crap?"
+After a little while, the lights started to flicker. More of a big box, really. Rory wondered.
 
-"Come on, we'll try again together," Sharona said.
+A/N: i think Olivia would toally enjoy having two Doctors around, as demonstrated, and she would treat them both equally, so everything still hangs on Amy as before. Oh well. But that's…it's not possible. He stretched across the table and grabbed her hand. A shuffle.
 
-"Shit."
+Rory stepped toward the light and knelt down to pick up the nanorecorder then looked to the Doctor.
 
-"You're going to look so
+Compassion and empathy you do lack;
 
-"Come on, we'll try again together," Sharona said.
+He moved back and, with a spinning head, stood up. he ordered her, tossing the ropes he was using to drag the panel with aside to march toward Idris. Down to the hairs on its chinny chin chin. I know I would. She poured herself a glass of the punch. Both helpless.
 
-"You're going to look so
+"Oh!
 
-her wonder, as she cocked her head to the side in an intensive listening manner…what...lied…beneath?
+"So you're like a…sea urchin.
 
-Sharona was thrown out of her reverie by the sound of Cecile frantically searching through a box of assorted eye shadows and crèmes in the other room. Sharona had also found out during her snooping that Cecile had seriously considered becoming a nun at one point. Plus, she was excited. It was quite an opportunity for a person of her age and background (to say the 
+I suspect that it was sheer incompetence on my part, but lets go with her more generous interpretation."
 
-psycho-analysis that she had avoidant personality disorder with generalized anxiety. Cecile's mother had died (another case of suicide perhaps, the details surrounding the death left much to
+"Doctor!
 
-Sharona was thrown out of her reverie by the sound of Cecile frantically searching through a box of assorted eye shadows and crèmes in the other room. What could push a girl that far at such an age? Cecile, therefore, became a ward of the state and Stockton became the only real home she had ever known. What could push a girl that far at such an age? She was new and therefore untrustworthy. And now Cecile was living with and working for a man with the worst
+"When they gave me this project, I thought about just telling that pompous windbag 'no' and taking the consequences, maybe joining Susan," he moved to one of the consoles that needed repair and grumbled as he removed a plate from it.
 
-was obvious he wasn't like most men in many aspects, but was it really just a force of habit due to his obsessive-compulsive disorder? She wondered exactly why he buttoned it all the way to the top. Monk's former nurse/assistant, Ms. She wondered exactly why he buttoned it all the way to the top. With his tendencies, it would be a lot to expect a warm 
+'What do you remember? he told her but she only dragged him after the Doctor and Olivia. Olivia snapped.
 
-patient in the history of the ward. Cecil folded her head in her shaking hands. Monk, but it appeared that the decision wasn't exactly amicable. What a prudish, little thing. With his tendencies, it would be a lot to expect a warm 
+'The fault?' The sudden cessation of the wind was startling.
 
-grandeur. But in her fractured mind, to have even been considered by him for the possibility of an interview was such a promising prospective. And why wouldn't she? When Cecile finally found
+Sophie-24 climbed up onto the huge hairy back of the Efapan, then reached back to Tella-19, pulling her up as well. However, I thought it was important to see Roady's POV after their fight and how he deals with it. She could feel herself heating up, but ignored it. he shouted into the teeth of the wind, the bitterness in his hearts far more painful than his physical wounds.
 
-She made him nervous, that much she could tell. Sharona felt truly compelled to enter the room and sit next to her at the vanity. Perhaps some of his fear came from the threat of inexperienced youth? Cecile had probably seen and experienced much worse during her stay at Stockton, but Sharona liked to imagine that nobody
+Olivia aimed her Sonic at the Cyberman and made a shooting sound, imitating the recoil of a gun as the Cyberlegion outside…exploded, ship by ship.
 
-be registered at Stockton State Hospital for depression and attempted suicide (twice, once by pills and once by asphyxiation) at the tender age of 8. She was embarrassed for herself to have dreamt about it before this moment. Monk, but it appeared that the decision wasn't exactly amicable. Her countenance wasn't at all threatening; she was exceedingly young and meek. Now the very thought of it filled 
+'I was those two people's worst fear, back on Earth II. A little fob watch.' I asked Teresa from inventory if I could have some, 'n I got the jacket custom made. They belong to the BBC, no matter how much I beg and plead Steven Moffat! He tossed the cube across the room. Canton asked the group.
 
-"Shit."
+Adie moved more briskly after them, wondering what was behind those walls the Doctor had erected and why the people who loved him most in the universe were also so terribly scared of him. It was muffled through all the dirt, the thick metal hull, and the closed door, but it sounded like the buried hospital ship was caught in a waterfall of ball bearings. What do they want?'
 
-"You know why Sweetie, it's because you're perfect just the way you are."
+Suddenly, the big bug fell apart into its smaller selves and Rose fell through a rain of metal insects, landing hard, and rolling to her feet quickly. With a muttered curse, he plunged off the floe and into the river. You will be more than us. he questioned, moving out of the way. But apparently you all love me anyway. Olivia ground out.
 
-"Come on, we'll try again together," Sharona said.
+Adie flinched a little at this. They put me in here. he exclaimed giddily. You will not be a mad lady with a house full of cats. Tomoko blinked in confusion and then shook her head, sticking to the topic.
 
-"You know why Sweetie, it's because you're perfect just the way you are."
+'Only humans,' is said, slowly, thinking about it. It was a mysterious piece of TimeLord tech that seemed to be an explosive, planted in his TARDIS. Where ever it's gone, it's likely that the people who've gone missing are there, too.'
 
-"You know why Sweetie, it's because you're perfect just the way you are."
+Perched in front of him, on a bar on the antenna where he clung, was a tiny silvery creature, the size of a fruit wasp. he asked her.
 
-"Why is it that no matter what I put on, it always looks like crap?"
+'And they bring lots of people, too,' Lussie chimed, happy. Real house. Nikki protested.
 
-"Shit."
+Olivia cautiously stepped toward the tub at the base of the vat of Flesh, pulling the Doctor with her by the hand. He was barefoot, with only a jumper and jeans on, and the cold was seeping into his clothes. He stepped ahead to lead the way through the junkyard and they stopped on a hill to look over the landscape.
 
-poor child. What could push a girl that far at such an age? Cecile, therefore, became a ward of the state and Stockton became the only real home she had ever known. That was the official diagnosis. Sharona sympathized with her deeply.
+A beetle trundled over the hill towards her, moving slowly but inexorably towards the two TARDIS. But, seven minutes later she found that the Doctor was already there, reading a book and settled into one of the awful chairs..
 
-psycho-analysis that she had avoidant personality disorder with generalized anxiety. Monk's former nurse/assistant, Ms. Sharona had been watching this scene with great intensity and concern.
-
-in advance for this one particular night and now it hung neatly from Trudy's antique armoire. Apparently, she was the youngest
-
-be registered at Stockton State Hospital for depression and attempted suicide (twice, once by pills and once by asphyxiation) at the tender age of 8. Cecile's mother had died (another case of suicide perhaps, the details surrounding the death left much to
-
-be registered at Stockton State Hospital for depression and attempted suicide (twice, once by pills and once by asphyxiation) at the tender age of 8. She had no other family, at least, no family who wanted to come forward and claim the
-
-La jeune fille
-
-psycho-analysis that she had avoidant personality disorder with generalized anxiety. That was the official diagnosis. Cecile, therefore, became a ward of the state and Stockton became the only real home she had ever known. Perhaps some of his fear came from the threat of inexperienced youth? Monk, but it appeared that the decision wasn't exactly amicable. To imagine working with Adrian Monk, the renowned San Francisco detective, was an indulgent delusion of 
-
-She made him nervous, that much she could tell. Cecil folded her head in her shaking hands. Sharona felt truly compelled to enter the room and sit next to her at the vanity. Plus, she was excited. She was embarrassed for herself to have dreamt about it before this moment. To imagine working with Adrian Monk, the renowned San Francisco detective, was an indulgent delusion of 
-
-"Yeah, I know…but we can try."
+"Done."
 

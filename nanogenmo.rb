@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 
-# Generates random fiction by harvesting stories from Fanfiction.net and randomly
+# Generates random fiction by harvesting stories from Fanfiction.net and semi-randomly
 # combining the sentences it finds.
 
 require 'rubygems'
@@ -23,11 +23,18 @@ INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 # without spending ages scraping data from the web again) you can set this to "false".
 FETCH_LIVE_DATA = true
 
-## Less common config options
+####### Less common config options ########
+
 # Fanfiction.net base URL for following relative links
 BASE_URL = 'http://www.fanfiction.net'
 # Fake a user agent to avoid getting 403 errors
 USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux armv7l; rv:24.0) Gecko/20100101 Firefox/24.0'
+# Stop after finding this many pages to avoid huge data sets
+MAX_PAGES = 100
+# Delay between requesting pages from fanfiction.net, to be nice. Seconds.
+# The default 5 seconds makes data collection take a LONG TIME. Smaller values are
+# fine right up until fanfiction.net IP-bans you :(
+PAGE_DELAY = 5
 # Intermediate and output file names to use
 DATA_CACHE_FILE_NAME = 'cache.yaml'
 STORY_MARKDOWN_FILE_NAME = 'story.md'
@@ -35,6 +42,7 @@ STORY_HTML_FILE_NAME = 'story.html'
 # Tags, IDs, classes and regexes to find and extract stories, pages, and sentences.
 STORY_LINK_CLASS = 'stitle'
 CHAPTER_SELECT_ID = 'chap_select'
+STORY_TEXT_ID = 'storytext'
 SENTENCE_REGEX = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/
 # Tweaks
 WORD_GOAL = 1000
@@ -43,13 +51,16 @@ DIALOGUE_RATE = 0.2 # For every 1 proper paragraph, there will be this many dial
 MAX_SENT_PER_PARA = 6 # Maximum number of sentences per paragraph
 MAX_SENT_PER_DIALOGUE = 6 # Maximum number of sentences / lines in a dialogue section.
 
+
 ######### CODE STARTS HERE ##########
+
 
 # If we're fetching live data, as opposed to reading an existing file...
 if FETCH_LIVE_DATA
 	# First fetch the HTML for the chosen index page, and find all the links to stories.
 	print 'Finding stories...'
 	indexHTML = Nokogiri::HTML(open(INDEX_URL, 'User-Agent' => USER_AGENT))
+	sleep(PAGE_DELAY)
 	storyLinkTags = indexHTML.css("a.#{STORY_LINK_CLASS}")
 	storyURLs = []
 	storyLinkTags.each do |tag|
@@ -67,19 +78,31 @@ if FETCH_LIVE_DATA
 		pageURLs << chapterOneURL
 		
 		# Now go looking for others
-		chapterOneHTML = Nokogiri::HTML(open(chapterOneURL, 'User-Agent' => USER_AGENT))
-		optionElements = chapterOneHTML.css("select\##{CHAPTER_SELECT_ID} option")
-		optionElements.each do |option|
-		  # Figure out what the URL for that page would be
-		  chapterURL = chapterOneURL.sub(/\/1\//, "\/#{option['value']}\/")
-		  # Add to the page URLs list if it's not already in there
-		  if !pageURLs.include?(chapterURL)
-		    print '.'
-		  	pageURLs << chapterURL
-		  end
-		end
+		begin
+			chapterOneHTML = Nokogiri::HTML(open(chapterOneURL, 'User-Agent' => USER_AGENT))
+			sleep(PAGE_DELAY)
+			optionElements = chapterOneHTML.css("select\##{CHAPTER_SELECT_ID} option")
+			optionElements.each do |option|
+				# Figure out what the URL for that page would be
+				chapterURL = chapterOneURL.sub(/\/1\//, "\/#{option['value']}\/")
+				# Add to the page URLs list if it's not already in there
+				if !pageURLs.include?(chapterURL)
+				  print '.'
+					pageURLs << chapterURL
+				end
+			end
+	  rescue
+	    print "\nFailed to load and parse a page. Carrying on..."
+	  end
+	  
 	end
 	print " #{pageURLs.size} found.\n"
+	
+	# Limit the number of pages found if necessary
+	if pageURLs.size > MAX_PAGES
+	  print "Restricting page list to #{MAX_PAGES} to avoid a huge data set.\n"
+	  pageURLs = pageURLs[0..(MAX_PAGES-1)]
+	end
 
 	# Create a data structure that will hold each sentence in an array, sorted by which
 	# type of sentence it is.
@@ -97,30 +120,34 @@ if FETCH_LIVE_DATA
 	print 'Extracting sentences'
   pageURLs.each do |pageURL|
     print '.'
-  	pageHTML = Nokogiri::HTML(open(pageURL, 'User-Agent' => USER_AGENT))
-		paragraphs = pageHTML.css("p")
-		paragraphs.each_with_index do |para, pi|
-		  # Take the contents of each <p> element, remove linebreaks and scan for sentences
-			tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
-			tmpSentences.each_with_index do |tmpSentence, i|
-			print "#{tmpSentence}\n--\n"
-			  if (pi == 0) && (i == 0)
-			    sentences[:startChapters] << tmpSentence
-			  elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
-			    sentences[:endChapters] << tmpSentence
-			  elsif tmpSentence.include? '"'
-			    sentences[:dialogue] << tmpSentence
-			  elsif tmpSentences.size == 1
-			     sentences[:solitary] << tmpSentence
-			  elsif i == 0
-			     sentences[:startParagraphs] << tmpSentence
-			  elsif i == tmpSentences.size - 1
-			     sentences[:endParagraphs] << tmpSentence
-			  else
-			     sentences[:midParagraphs] << tmpSentence
-			  end
+    begin
+  		pageHTML = Nokogiri::HTML(open(pageURL, 'User-Agent' => USER_AGENT))
+  		sleep(PAGE_DELAY)
+			paragraphs = pageHTML.css("div\##{STORY_TEXT_ID} p")
+			paragraphs.each_with_index do |para, pi|
+				# Take the contents of each <p> element, remove linebreaks and scan for sentences
+				tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
+				tmpSentences.each_with_index do |tmpSentence, i|
+					if (pi == 0) && (i == 0)
+					  sentences[:startChapters] << tmpSentence
+					elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
+					  sentences[:endChapters] << tmpSentence
+					elsif tmpSentence.include? '"'
+					  sentences[:dialogue] << tmpSentence
+					elsif tmpSentences.size == 1
+					   sentences[:solitary] << tmpSentence
+					elsif i == 0
+					   sentences[:startParagraphs] << tmpSentence
+					elsif i == tmpSentences.size - 1
+					   sentences[:endParagraphs] << tmpSentence
+					else
+					   sentences[:midParagraphs] << tmpSentence
+					end
+				end
 			end
-		end
+	  rescue
+	    print "\nFailed to load and parse a page. Carrying on..."
+	  end
   end
   print " #{sentences[:startChapters].size + sentences[:endChapters].size + sentences[:startParagraphs].size + sentences[:midParagraphs].size + sentences[:endParagraphs].size + sentences[:solitary].size + sentences[:dialogue].size} found.\n"
 	
