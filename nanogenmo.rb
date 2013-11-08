@@ -2,7 +2,7 @@
 # encoding: UTF-8
 
 # Generates random fiction by harvesting stories from Fanfiction.net and semi-randomly
-# combining the @sentences it finds.
+# combining the sentences it finds.
 
 require 'rubygems'
 require 'nokogiri'
@@ -17,12 +17,13 @@ require 'redcarpet'
 # Pick a Fanfiction.net page that has links to stories. This can be a category, user or
 # search page, e.g.
 # http://www.fanfiction.net/tv/Doctor-Who/
+# http://www.fanfiction.net/Sonic-the-Hedgehog-and-My-Little-Pony-Crossovers/253/621/
 # http://www.fanfiction.net/search.php?keywords=cupcakes&ready=1&type=story
 # http://www.fanfiction.net/u/1234567/UserName
 INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 
 # A list of words which, if present in a sentence, will disqualify it from use in
-# the generator. Used to catch @sentences which aren't part of the actual text.
+# the generator. Used to catch sentences which aren't part of the actual text.
 BANNED_WORDS = ['Chapter', 'chapter', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', '1:', '2:', '3:', '4:', '5:', '6:', '7:', '8:', '9:', '0:', 'R&R', 'POV']
 
 #########################################
@@ -59,10 +60,10 @@ SOLITARY_RATE = 0.1
 # For every 1 proper paragraph, there will be this many dialogue sequences.
 DIALOGUE_RATE = 0.2
 
-# Maximum number of @sentences per paragraph
+# Maximum number of sentences per paragraph
 MAX_SENT_PER_PARA = 6
 
-# Maximum number of @sentences / lines in a dialogue sequence.
+# Maximum number of sentences / lines in a dialogue sequence.
 MAX_SENT_PER_DIALOGUE = 6
 
 #########################################
@@ -76,7 +77,7 @@ USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux armv7l; rv:24.0) Gecko/20100101 Fi
 DATA_CACHE_FILE_NAME = 'cache.yaml'
 STORY_MARKDOWN_FILE_NAME = 'story.md'
 STORY_HTML_FILE_NAME = 'story.html'
-# Element IDs, classes and regexes to find and extract stories, pages, and @sentences.
+# Element IDs, classes and regexes to find and extract stories, pages, and sentences.
 STORY_LINK_CLASS = 'stitle'
 CHAPTER_SELECT_ID = 'chap_select'
 STORY_TEXT_ID = 'storytext'
@@ -170,8 +171,8 @@ if FETCH_LIVE_DATA
 		:dialogue => []
 	}
 	
-	# For each page URL, load the page and extract @sentences.
-	print 'Extracting @sentences'
+	# For each page URL, load the page and extract sentences.
+	print 'Extracting sentences'
   pageURLs.each do |pageURL|
     print '.'
     begin
@@ -179,7 +180,7 @@ if FETCH_LIVE_DATA
   		sleep(PAGE_DELAY)
 			paragraphs = pageHTML.css("div\##{STORY_TEXT_ID} p")
 			paragraphs.each_with_index do |para, pi|
-				# Take the contents of each <p> element, remove linebreaks and scan for @sentences
+				# Take the contents of each <p> element, remove linebreaks and scan for sentences
 				tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
 				tmpSentences.each_with_index do |tmpSentence, i|
 				  # Check for 'banned' words, only proceed if they are not present
@@ -193,13 +194,13 @@ if FETCH_LIVE_DATA
 						elsif tmpSentence.include? '"'
 							@sentences[:dialogue] << tmpSentence
 						elsif tmpSentences.size == 1
-							 @sentences[:solitary] << tmpSentence
+						  @sentences[:solitary] << tmpSentence
 						elsif i == 0
-							 @sentences[:startParagraphs] << tmpSentence
+							@sentences[:startParagraphs] << tmpSentence
 						elsif i == tmpSentences.size - 1
-							 @sentences[:endParagraphs] << tmpSentence
+							@sentences[:endParagraphs] << tmpSentence
 						else
-							 @sentences[:midParagraphs] << tmpSentence
+						  @sentences[:midParagraphs] << tmpSentence
 						end
 					end
 				end
@@ -223,7 +224,7 @@ else
 		print "Loading data from #{DATA_CACHE_FILE_NAME}..."
 		serialisedSentences = File.read(DATA_CACHE_FILE_NAME)
 		@sentences = YAML::load(serialisedSentences)
-		print " #{@sentences[:startChapters].size + @sentences[:endChapters].size + @sentences[:startParagraphs].size + @sentences[:midParagraphs].size + @sentences[:endParagraphs].size + @sentences[:solitary].size + @sentences[:dialogue].size} @sentences loaded.\n"
+		print " #{@sentences[:startChapters].size + @sentences[:endChapters].size + @sentences[:startParagraphs].size + @sentences[:midParagraphs].size + @sentences[:endParagraphs].size + @sentences[:solitary].size + @sentences[:dialogue].size} sentences loaded.\n"
 	else
 	  # No file, so error out
 		print "FETCH_LIVE_DATA was set to 'false' but a data file named #{DATA_CACHE_FILE_NAME} could not be found. This means there is no source of data for the script to use. Check your configuration.\n"
@@ -233,7 +234,7 @@ else
 end
 
 
-# Start generating. If we get here, we know that @sentences has contents that we can use.
+# Start generating. If we get here, we know that sentences has contents that we can use.
 story = ''
 
 # Write a title. Steal a line of dialog so we have something 'punchy' (or just weird)
@@ -263,7 +264,7 @@ for chapterNumber in 1..NUM_CHAPTERS
 	while story.split.size < chapterLength * chapterNumber
 		print '.'
 		# Decide what type of section we are going into - a proper paragraph (at least 2 
-		# @sentences), a solitary sentence, or a dialogue section.
+		# sentences), a solitary sentence, or a dialogue section.
 		roll = rand * (1 + SOLITARY_RATE + DIALOGUE_RATE)
 		if roll < SOLITARY_RATE
 		  # Solitary. Pick a solitary paragraph and concatenate it to the story.
@@ -279,7 +280,7 @@ for chapterNumber in 1..NUM_CHAPTERS
 		  # Normal Paragraph. First work out how long the paragraph should be. Must be at
 		  # least 2
 		  paragraphLength = rand(MAX_SENT_PER_PARA - 1) + 1
-		  # Now add a beginning sentence, the right number of middle @sentences, and an end
+		  # Now add a beginning sentence, the right number of middle sentences, and an end
 		  # sentence.
 		  story << @sentences[:startParagraphs][rand(@sentences[:startParagraphs].size - 1)] << ' '
 		  for i in 0..paragraphLength-2
