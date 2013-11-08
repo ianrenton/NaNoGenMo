@@ -24,7 +24,7 @@ INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 
 # A list of words which, if present in a sentence, will disqualify it from use in
 # the generator. Used to catch sentences which aren't part of the actual text.
-BANNED_WORDS = ['Chapter', 'chapter', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', '1:', '2:', '3:', '4:', '5:', '6:', '7:', '8:', '9:', '0:', 'R&R', 'POV']
+BANNED_WORDS = ['Chapter', 'chapter', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', ':', '^_^', 'R&R', 'POV']
 
 #########################################
 #         WEB SCRAPING CONFIG           #
@@ -103,7 +103,7 @@ def makeTitle()
 end
 
 #########################################
-#           CODE STARTS HERE            #
+#       MAIN SCRIPT STARTS HERE         #
 #########################################
 
 # If we're fetching live data, as opposed to reading an existing file...
