@@ -30,5 +30,6 @@ FAQ
 * **Does running this violate Fanfiction.net's Terms of Service?**<br/>Yep. If you're an actual Fanfiction.net user you probably want to log out before running this. I take no responsibility if you get banned.
 * **The generated text is full of weird half-sentences, what gives?**<br/>The regular expression parser assumes the Fanfiction.net authors have a proper grasp of punctuation and grammar. Regrettably this is not always the case.
 * **Why is some of it in a foreign language?**<br/>NaNoGenMo doesn't discriminate, man! It just uses the stories you point it at. If you want, you can generate a story entirely in another language by using the results of ff.net's advanced search as the input.
-* **What's the best out-of-context sentence you've seen it add to a story?**<br/>"a slightly confusing fishnet-esque body-covering suit."
-* **And the best auto-generated title?**<br/>"Oh my God this thing is—".
+* **What's the best combination of sentences you've seen it add to a story?**<br/>"Rose, stop. We can't do another fight like this."<br/>
+"No. I think I have a lifetime spanner ban," she said ruefully.
+* **And the best auto-generated title?**<br/>Chapter 5. Should we go make sure Kari and my mum haven't killed each other?
