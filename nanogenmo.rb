@@ -9,6 +9,7 @@ require 'nokogiri'
 require 'open-uri'
 require 'yaml'
 require 'redcarpet'
+require 'erb'
 
 #########################################
 #            SOURCE MATERIAL            #
@@ -24,7 +25,7 @@ INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 
 # A list of words which, if present in a sentence, will disqualify it from use in
 # the generator. Used to catch sentences which aren't part of the actual text.
-BANNED_WORDS = ['Chapter', 'chapter', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', ':', '^_^', 'R&R', 'POV']
+BANNED_WORDS = ['Chapter', 'chapter', 'Ch.', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', ':', '^_^', 'R&R', 'POV']
 
 #########################################
 #         WEB SCRAPING CONFIG           #
@@ -33,7 +34,7 @@ BANNED_WORDS = ['Chapter', 'chapter', 'review', 'A/N', 'Note', '*', '1.', '2.', 
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
 # without spending ages scraping data from the web again) you can set this to "false".
-FETCH_LIVE_DATA = true
+FETCH_LIVE_DATA = false
 
 # Stop after finding this many pages to avoid huge data sets
 MAX_PAGES = 100
@@ -48,7 +49,7 @@ PAGE_DELAY = 5
 #########################################
 
 # Number of words to aim for.
-WORD_GOAL = 50000
+WORD_GOAL = 5000
 
 # Number of chapters to write. Each will be roughly WORD_GOAL/NUM_CHAPTERS words long.
 NUM_CHAPTERS = 20
@@ -105,6 +106,10 @@ end
 #########################################
 #       MAIN SCRIPT STARTS HERE         #
 #########################################
+
+# Store start time
+startTime = Time.now
+print "NaNoGenMo started at: #{startTime}\n"
 
 # If we're fetching live data, as opposed to reading an existing file...
 if FETCH_LIVE_DATA
@@ -241,7 +246,7 @@ story = ''
 # Underline it in Markdown style.
 print 'Writing a story called... '
 title = makeTitle()
-story << title << "\n" << "="*title.length << "\n\n"
+story << "# #{title}\n\n"
 print "\"#{title}\".\n"
 
 print 'Generating text.'
@@ -254,8 +259,7 @@ for chapterNumber in 1..NUM_CHAPTERS
 
   # Insert a chapter heading
   chapterTitle = makeTitle()
-  chapterHeading = "Chapter #{chapterNumber}. #{chapterTitle}"
-  story << chapterHeading << "\n" << "="*chapterHeading.length << "\n\n"
+  story <<  "## Chapter #{chapterNumber}. #{chapterTitle}\n\n"
 
   # Start the chapter with an opening sentence
   story << @sentences[:startChapters][rand(@sentences[:startChapters].size - 1)] << "\n\n"
@@ -305,6 +309,13 @@ print " done.\n"
 # Generate some nicer-looking HTML
 print 'Generating HTML...'
 markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
-html = markdown.render(story)
-File.open(STORY_HTML_FILE_NAME, 'w') {|f| f.write(html) }
+# Variables needed by ERB:
+storyHTML = markdown.render(story)
+wordCount = story.split.size
+generationTime = Time.now - startTime
+# Generate page with ERB
+erbTemplate = File.open("story.erb", 'r').read
+File.open(STORY_HTML_FILE_NAME, 'w') {|f| f.write(ERB.new(erbTemplate).result) }
 print " done.\n"
+
+print "NaNoGenMo processing complete in #{generationTime} seconds.\n"
