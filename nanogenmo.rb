@@ -93,13 +93,13 @@ STRIP_FROM_TITLE_REGEX = /[\,\.\"]/
 def makeTitle()
   title = ''
   while title == ''
-		tmpTitle = @sentences[:dialogue][rand(@sentences[:dialogue].size - 1)]
-		quotedSections = tmpTitle.scan(QUOTED_TEXT_REGEX)
-		if !quotedSections.nil? && !quotedSections[0].nil?
-			title = quotedSections[0][0].gsub(STRIP_FROM_TITLE_REGEX, '')
-		end
-	end
-	return title
+    tmpTitle = @sentences[:dialogue][rand(@sentences[:dialogue].size - 1)]
+    quotedSections = tmpTitle.scan(QUOTED_TEXT_REGEX)
+    if !quotedSections.nil? && !quotedSections[0].nil?
+      title = quotedSections[0][0].gsub(STRIP_FROM_TITLE_REGEX, '')
+    end
+  end
+  return title
 end
 
 #########################################
@@ -108,128 +108,128 @@ end
 
 # If we're fetching live data, as opposed to reading an existing file...
 if FETCH_LIVE_DATA
-	# First fetch the HTML for the chosen index page, and find all the links to stories.
-	print 'Finding stories...'
-	indexHTML = Nokogiri::HTML(open(INDEX_URL, 'User-Agent' => USER_AGENT))
-	sleep(PAGE_DELAY)
-	storyLinkTags = indexHTML.css("a.#{STORY_LINK_CLASS}")
-	storyURLs = []
-	# Work out the base URL (fanfiction.net) to append to relative links
-	uri = URI.parse(INDEX_URL)
+  # First fetch the HTML for the chosen index page, and find all the links to stories.
+  print 'Finding stories...'
+  indexHTML = Nokogiri::HTML(open(INDEX_URL, 'User-Agent' => USER_AGENT))
+  sleep(PAGE_DELAY)
+  storyLinkTags = indexHTML.css("a.#{STORY_LINK_CLASS}")
+  storyURLs = []
+  # Work out the base URL (fanfiction.net) to append to relative links
+  uri = URI.parse(INDEX_URL)
   baseURL = "#{uri.scheme}://#{uri.host}"
   # Compile a list of all the links to stories
-	storyLinkTags.each do |tag|
-		storyURLs << baseURL + tag['href']
-	end
-	print " #{storyURLs.size} found.\n"
+  storyLinkTags.each do |tag|
+    storyURLs << baseURL + tag['href']
+  end
+  print " #{storyURLs.size} found.\n"
 
-	# Now you have a link to the "Chapter 1" page of each story. For each "Chapter 1" page,
-	# look for a SELECT box that will provide links to any other chapters. Add them all to
-	# a new array of pages.
-	print 'Finding pages...'
-	pageURLs = []
-	storyURLs.each do |chapterOneURL|
-		# The URL we already have is a valid page, so add that first
-		pageURLs << chapterOneURL
-		
-		# Now go looking for others
-		begin
-			chapterOneHTML = Nokogiri::HTML(open(chapterOneURL, 'User-Agent' => USER_AGENT))
-			sleep(PAGE_DELAY)
-			optionElements = chapterOneHTML.css("select\##{CHAPTER_SELECT_ID} option")
-			optionElements.each do |option|
-				# Figure out what the URL for that page would be
-				chapterURL = chapterOneURL.sub(/\/1\//, "\/#{option['value']}\/")
-				# Add to the page URLs list if it's not already in there
-				if !pageURLs.include?(chapterURL)
-				  print '.'
-					pageURLs << chapterURL
-				end
-			end
-	  rescue
-	    print "\nFailed to load and parse a page. Carrying on..."
-	  end
-	  
-	end
-	print " #{pageURLs.size} found.\n"
-	
-	# Limit the number of pages found if necessary
-	if pageURLs.size > MAX_PAGES
-	  print "Restricting page list to #{MAX_PAGES} to avoid a huge data set.\n"
-	  pageURLs = pageURLs[0..(MAX_PAGES-1)]
-	end
+  # Now you have a link to the "Chapter 1" page of each story. For each "Chapter 1" page,
+  # look for a SELECT box that will provide links to any other chapters. Add them all to
+  # a new array of pages.
+  print 'Finding pages...'
+  pageURLs = []
+  storyURLs.each do |chapterOneURL|
+    # The URL we already have is a valid page, so add that first
+    pageURLs << chapterOneURL
+    
+    # Now go looking for others
+    begin
+      chapterOneHTML = Nokogiri::HTML(open(chapterOneURL, 'User-Agent' => USER_AGENT))
+      sleep(PAGE_DELAY)
+      optionElements = chapterOneHTML.css("select\##{CHAPTER_SELECT_ID} option")
+      optionElements.each do |option|
+        # Figure out what the URL for that page would be
+        chapterURL = chapterOneURL.sub(/\/1\//, "\/#{option['value']}\/")
+        # Add to the page URLs list if it's not already in there
+        if !pageURLs.include?(chapterURL)
+          print '.'
+          pageURLs << chapterURL
+        end
+      end
+    rescue
+      print "\nFailed to load and parse a page. Carrying on..."
+    end
+    
+  end
+  print " #{pageURLs.size} found.\n"
+  
+  # Limit the number of pages found if necessary
+  if pageURLs.size > MAX_PAGES
+    print "Restricting page list to #{MAX_PAGES} to avoid a huge data set.\n"
+    pageURLs = pageURLs[0..(MAX_PAGES-1)]
+  end
 
-	# Create a data structure that will hold each sentence in an array, sorted by which
-	# type of sentence it is.
-	@sentences = {
-		:startChapters => [],
-		:endChapters => [],
-		:startParagraphs => [],
-		:midParagraphs => [],
-		:endParagraphs => [],
-		:solitary => [],
-		:dialogue => []
-	}
-	
-	# For each page URL, load the page and extract sentences.
-	print 'Extracting sentences'
+  # Create a data structure that will hold each sentence in an array, sorted by which
+  # type of sentence it is.
+  @sentences = {
+    :startChapters => [],
+    :endChapters => [],
+    :startParagraphs => [],
+    :midParagraphs => [],
+    :endParagraphs => [],
+    :solitary => [],
+    :dialogue => []
+  }
+  
+  # For each page URL, load the page and extract sentences.
+  print 'Extracting sentences'
   pageURLs.each do |pageURL|
     print '.'
     begin
-  		pageHTML = Nokogiri::HTML(open(pageURL, 'User-Agent' => USER_AGENT))
-  		sleep(PAGE_DELAY)
-			paragraphs = pageHTML.css("div\##{STORY_TEXT_ID} p")
-			paragraphs.each_with_index do |para, pi|
-				# Take the contents of each <p> element, remove linebreaks and scan for sentences
-				tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
-				tmpSentences.each_with_index do |tmpSentence, i|
-				  # Check for 'banned' words, only proceed if they are not present
-				  if !(BANNED_WORDS.any? { |word| tmpSentence.include?(word) })
-				    # Based on the sentence's position and content, decide what type it is and
-				    # thus into which bucket it goes.
-						if (pi == 0) && (i == 0)
-							@sentences[:startChapters] << tmpSentence
-						elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
-							@sentences[:endChapters] << tmpSentence
-						elsif tmpSentence.include? '"'
-							@sentences[:dialogue] << tmpSentence
-						elsif tmpSentences.size == 1
-						  @sentences[:solitary] << tmpSentence
-						elsif i == 0
-							@sentences[:startParagraphs] << tmpSentence
-						elsif i == tmpSentences.size - 1
-							@sentences[:endParagraphs] << tmpSentence
-						else
-						  @sentences[:midParagraphs] << tmpSentence
-						end
-					end
-				end
-			end
-	  rescue
-	    print "\nFailed to load and parse a page. Carrying on..."
-	  end
+      pageHTML = Nokogiri::HTML(open(pageURL, 'User-Agent' => USER_AGENT))
+      sleep(PAGE_DELAY)
+      paragraphs = pageHTML.css("div\##{STORY_TEXT_ID} p")
+      paragraphs.each_with_index do |para, pi|
+        # Take the contents of each <p> element, remove linebreaks and scan for sentences
+        tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
+        tmpSentences.each_with_index do |tmpSentence, i|
+          # Check for 'banned' words, only proceed if they are not present
+          if !(BANNED_WORDS.any? { |word| tmpSentence.include?(word) })
+            # Based on the sentence's position and content, decide what type it is and
+            # thus into which bucket it goes.
+            if (pi == 0) && (i == 0)
+              @sentences[:startChapters] << tmpSentence
+            elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
+              @sentences[:endChapters] << tmpSentence
+            elsif tmpSentence.include? '"'
+              @sentences[:dialogue] << tmpSentence
+            elsif tmpSentences.size == 1
+              @sentences[:solitary] << tmpSentence
+            elsif i == 0
+              @sentences[:startParagraphs] << tmpSentence
+            elsif i == tmpSentences.size - 1
+              @sentences[:endParagraphs] << tmpSentence
+            else
+              @sentences[:midParagraphs] << tmpSentence
+            end
+          end
+        end
+      end
+    rescue
+      print "\nFailed to load and parse a page. Carrying on..."
+    end
   end
   print " #{@sentences[:startChapters].size + @sentences[:endChapters].size + @sentences[:startParagraphs].size + @sentences[:midParagraphs].size + @sentences[:endParagraphs].size + @sentences[:solitary].size + @sentences[:dialogue].size} found.\n"
-	
-	# Serialise the data to disk for later use
-	print "Saving data to #{DATA_CACHE_FILE_NAME}..."
-	serialisedSentences = YAML::dump(@sentences)
-	File.open(DATA_CACHE_FILE_NAME, 'w') { |file| file.write(serialisedSentences) }
-	print " Done.\n"
+  
+  # Serialise the data to disk for later use
+  print "Saving data to #{DATA_CACHE_FILE_NAME}..."
+  serialisedSentences = YAML::dump(@sentences)
+  File.open(DATA_CACHE_FILE_NAME, 'w') { |file| file.write(serialisedSentences) }
+  print " Done.\n"
 
 else
-	# We're not fetching live data, so load it from a file saved previously
-	
-	if File.file?(DATA_CACHE_FILE_NAME)
-		print "Loading data from #{DATA_CACHE_FILE_NAME}..."
-		serialisedSentences = File.read(DATA_CACHE_FILE_NAME)
-		@sentences = YAML::load(serialisedSentences)
-		print " #{@sentences[:startChapters].size + @sentences[:endChapters].size + @sentences[:startParagraphs].size + @sentences[:midParagraphs].size + @sentences[:endParagraphs].size + @sentences[:solitary].size + @sentences[:dialogue].size} sentences loaded.\n"
-	else
-	  # No file, so error out
-		print "FETCH_LIVE_DATA was set to 'false' but a data file named #{DATA_CACHE_FILE_NAME} could not be found. This means there is no source of data for the script to use. Check your configuration.\n"
-		exit
-	end
+  # We're not fetching live data, so load it from a file saved previously
+  
+  if File.file?(DATA_CACHE_FILE_NAME)
+    print "Loading data from #{DATA_CACHE_FILE_NAME}..."
+    serialisedSentences = File.read(DATA_CACHE_FILE_NAME)
+    @sentences = YAML::load(serialisedSentences)
+    print " #{@sentences[:startChapters].size + @sentences[:endChapters].size + @sentences[:startParagraphs].size + @sentences[:midParagraphs].size + @sentences[:endParagraphs].size + @sentences[:solitary].size + @sentences[:dialogue].size} sentences loaded.\n"
+  else
+    # No file, so error out
+    print "FETCH_LIVE_DATA was set to 'false' but a data file named #{DATA_CACHE_FILE_NAME} could not be found. This means there is no source of data for the script to use. Check your configuration.\n"
+    exit
+  end
 
 end
 
@@ -257,41 +257,41 @@ for chapterNumber in 1..NUM_CHAPTERS
   chapterHeading = "Chapter #{chapterNumber}. #{chapterTitle}"
   story << chapterHeading << "\n" << "="*chapterHeading.length << "\n\n"
 
-	# Start the chapter with an opening sentence
-	story << @sentences[:startChapters][rand(@sentences[:startChapters].size - 1)] << "\n\n"
+  # Start the chapter with an opening sentence
+  story << @sentences[:startChapters][rand(@sentences[:startChapters].size - 1)] << "\n\n"
 
-	# Keep going until word count goal for this chapter is reached
-	while story.split.size < chapterLength * chapterNumber
-		print '.'
-		# Decide what type of section we are going into - a proper paragraph (at least 2 
-		# sentences), a solitary sentence, or a dialogue section.
-		roll = rand * (1 + SOLITARY_RATE + DIALOGUE_RATE)
-		if roll < SOLITARY_RATE
-		  # Solitary. Pick a solitary paragraph and concatenate it to the story.
-		  story << @sentences[:solitary][rand(@sentences[:solitary].size - 1)] << "\n\n"
-		elsif roll < (SOLITARY_RATE + DIALOGUE_RATE)
-		  # Dialogue. First work out how long the dialogue should be.
-		  dialogueLength = rand(MAX_SENT_PER_DIALOGUE)
-		  # Now add that many dialogue paragraphs.
-		  for i in 0..dialogueLength
-		    story << @sentences[:dialogue][rand(@sentences[:dialogue].size - 1)] << "\n\n"
-		  end
-		else
-		  # Normal Paragraph. First work out how long the paragraph should be. Must be at
-		  # least 2
-		  paragraphLength = rand(MAX_SENT_PER_PARA - 1) + 1
-		  # Now add a beginning sentence, the right number of middle sentences, and an end
-		  # sentence.
-		  story << @sentences[:startParagraphs][rand(@sentences[:startParagraphs].size - 1)] << ' '
-		  for i in 0..paragraphLength-2
-		    story << @sentences[:midParagraphs][rand(@sentences[:midParagraphs].size - 1)] << ' '
-		  end
-		  story << @sentences[:endParagraphs][rand(@sentences[:endParagraphs].size - 1)] << "\n\n"
-		end
-	end
+  # Keep going until word count goal for this chapter is reached
+  while story.split.size < chapterLength * chapterNumber
+    print '.'
+    # Decide what type of section we are going into - a proper paragraph (at least 2 
+    # sentences), a solitary sentence, or a dialogue section.
+    roll = rand * (1 + SOLITARY_RATE + DIALOGUE_RATE)
+    if roll < SOLITARY_RATE
+      # Solitary. Pick a solitary paragraph and concatenate it to the story.
+      story << @sentences[:solitary][rand(@sentences[:solitary].size - 1)] << "\n\n"
+    elsif roll < (SOLITARY_RATE + DIALOGUE_RATE)
+      # Dialogue. First work out how long the dialogue should be.
+      dialogueLength = rand(MAX_SENT_PER_DIALOGUE)
+      # Now add that many dialogue paragraphs.
+      for i in 0..dialogueLength
+        story << @sentences[:dialogue][rand(@sentences[:dialogue].size - 1)] << "\n\n"
+      end
+    else
+      # Normal Paragraph. First work out how long the paragraph should be. Must be at
+      # least 2
+      paragraphLength = rand(MAX_SENT_PER_PARA - 1) + 1
+      # Now add a beginning sentence, the right number of middle sentences, and an end
+      # sentence.
+      story << @sentences[:startParagraphs][rand(@sentences[:startParagraphs].size - 1)] << ' '
+      for i in 0..paragraphLength-2
+        story << @sentences[:midParagraphs][rand(@sentences[:midParagraphs].size - 1)] << ' '
+      end
+      story << @sentences[:endParagraphs][rand(@sentences[:endParagraphs].size - 1)] << "\n\n"
+    end
+  end
 
-	# Finish the chapter with a closing sentence
-	story << @sentences[:endChapters][rand(@sentences[:endChapters].size - 1)] << "\n\n"
+  # Finish the chapter with a closing sentence
+  story << @sentences[:endChapters][rand(@sentences[:endChapters].size - 1)] << "\n\n"
 
 end
 
@@ -308,5 +308,3 @@ markdown = Redcarpet::Markdown.new(Redcarpet::Render::HTML)
 html = markdown.render(story)
 File.open(STORY_HTML_FILE_NAME, 'w') {|f| f.write(html) }
 print " done.\n"
-
-
