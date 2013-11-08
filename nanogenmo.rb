@@ -34,7 +34,7 @@ BANNED_WORDS = ['Chapter', 'chapter', 'Ch.', 'review', 'A/N', 'Note', '*', '1.',
 # Fetch live data from the web. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
 # without spending ages scraping data from the web again) you can set this to "false".
-FETCH_LIVE_DATA = false
+FETCH_LIVE_DATA = true
 
 # Stop after finding this many pages to avoid huge data sets
 MAX_PAGES = 100
@@ -49,7 +49,7 @@ PAGE_DELAY = 5
 #########################################
 
 # Number of words to aim for.
-WORD_GOAL = 5000
+WORD_GOAL = 50000
 
 # Number of chapters to write. Each will be roughly WORD_GOAL/NUM_CHAPTERS words long.
 NUM_CHAPTERS = 20
