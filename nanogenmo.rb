@@ -25,7 +25,7 @@ INDEX_URL = 'http://www.fanfiction.net/tv/Doctor-Who/'
 
 # A list of words which, if present in a sentence, will disqualify it from use in
 # the generator. Used to catch sentences which aren't part of the actual text.
-BANNED_WORDS = ['Chapter', 'chapter', 'Ch.', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', ':', '^_^', 'R&R', 'POV']
+BANNED_WORDS = ['Chapter', 'chapter', 'Ch.', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', ':', '^_^', '^-^', 'R&R', 'POV']
 
 #########################################
 #         WEB SCRAPING CONFIG           #
@@ -298,6 +298,7 @@ for chapterNumber in 1..NUM_CHAPTERS
   story << @sentences[:endChapters][rand(@sentences[:endChapters].size - 1)] << "\n\n"
 
 end
+story << "# The End\n\n"
 
 print " wrote #{story.split.size} words in #{NUM_CHAPTERS} chapters!\n"
 
