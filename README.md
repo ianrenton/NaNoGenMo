@@ -18,7 +18,7 @@ Usage
 * Your story will be saved to `story.md` (Markdown format) and `story.html` (HTML format).
 * Read and enjoy!
 
-* If you have run the script previously, you will have a `cache.yaml` file saved which contains all the data scraped from Fanfiction.net. If you want to tweak the story generation parameters but use the same data set (saving a shitload of time) you can set `FETCH_LIVE_DATA = true`) in the script.
+* If you have run the script previously, you will have a `cache.yaml` file saved which contains all the data scraped from Fanfiction.net. If you want to tweak the story generation parameters but use the same data set (saving a shitload of time) you can set `FETCH_LIVE_DATA = false`) in the script.
 
 FAQ
 ---
