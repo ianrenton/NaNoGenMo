@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # encoding: UTF-8
 
-# Generates random fiction by harvesting stories from Fanfiction.net and semi-randomly
+# Generates random fiction by harvesting stories from local files and semi-randomly
 # combining the sentences it finds.
 
 require 'rubygems'
@@ -15,35 +15,17 @@ require 'erb'
 #            SOURCE MATERIAL            #
 #########################################
 
-# Pick one or more Fanfiction.net pages that has links to stories. These can be categories, user pages or search pages, e.g.
-# http://www.fanfiction.net/tv/Doctor-Who/
-# http://www.fanfiction.net/Sonic-the-Hedgehog-and-My-Little-Pony-Crossovers/253/621/
-# http://www.fanfiction.net/search.php?keywords=cupcakes&ready=1&type=story
-# http://www.fanfiction.net/u/1234567/UserName
-INDEX_URLS = 
-['https://www.fanfiction.net/tv/Breaking-Bad/',
- 'https://www.fanfiction.net/anime/Sailor-Moon/']
+# Path to local directory containing the files to parse
+FILES_DIR = './files/'
 
 # A list of words which, if present in a sentence, will disqualify it from use in
 # the generator. Used to catch sentences which aren't part of the actual text.
 BANNED_WORDS = ['Chapter', 'chapter', 'Ch.', 'review', 'A/N', 'Note', '*', '1.', '2.', '3.', '4.', '5.', '6.', '7.', '8.', '9.', '0.', ':', '^_^', '^-^', 'R&R', 'POV']
 
-#########################################
-#         WEB SCRAPING CONFIG           #
-#########################################
-
-# Fetch live data from the web. "true" is the normal use case. If you have previously run
+# Fetch live data from the files. "true" is the normal use case. If you have previously run
 # the script and want to run it again to get a new story with the same data set (i.e.
-# without spending ages scraping data from the web again) you can set this to "false".
+# without spending time scraping data from the files) you can set this to "false".
 FETCH_LIVE_DATA = true
-
-# Stop after finding this many pages to avoid huge data sets
-MAX_PAGES = 100
-
-# Delay between requesting pages from fanfiction.net, to be nice. Seconds.
-# The default 5 seconds makes data collection take a LONG TIME. Smaller values are
-# fine right up until fanfiction.net IP-bans you :(
-PAGE_DELAY = 5
 
 #########################################
 #       STORY GENERATION CONFIG         #
@@ -73,16 +55,10 @@ MAX_SENT_PER_DIALOGUE = 6
 #   You shouldn't need to edit these    #
 #########################################
 
-# Fake a user agent to avoid getting 403 errors
-USER_AGENT = 'Mozilla/5.0 (X11; Ubuntu; Linux armv7l; rv:24.0) Gecko/20100101 Firefox/24.0'
 # Intermediate and output file names to use
 DATA_CACHE_FILE_NAME = 'cache.yaml'
 STORY_MARKDOWN_FILE_NAME = 'story.md'
 STORY_HTML_FILE_NAME = 'story.html'
-# Element IDs, classes and regexes to find and extract stories, pages, and sentences.
-STORY_LINK_CLASS = 'stitle'
-CHAPTER_SELECT_ID = 'chap_select'
-STORY_TEXT_ID = 'storytext'
 SENTENCE_REGEX = /[^.!?\s][^.!?]*(?:[.!?](?!['"]?\s|$)[^.!?]*)*[.!?]?['"]?(?=\s|$)/
 QUOTED_TEXT_REGEX = /"([^"]*)"/
 STRIP_FROM_TITLE_REGEX = /[\,\.\"]/
@@ -127,80 +103,25 @@ if FETCH_LIVE_DATA
     :dialogue => []
   }
   
-  # Go through the requested URLs
-  INDEX_URLS.each do |indexURL|
-  
-    # First fetch the HTML for the chosen index page, and find all the links to stories.
-    print "Finding stories on #{indexURL}..."
-    indexHTML = Nokogiri::HTML(open(indexURL, 'User-Agent' => USER_AGENT))
-    sleep(PAGE_DELAY)
-    storyLinkTags = indexHTML.css("a.#{STORY_LINK_CLASS}")
-    storyURLs = []
-    # Work out the base URL (fanfiction.net) to append to relative links
-    uri = URI.parse(indexURL)
-    baseURL = "#{uri.scheme}://#{uri.host}"
-    # Compile a list of all the links to stories
-    storyLinkTags.each do |tag|
-      storyURLs << baseURL + tag['href']
-    end
-    print " #{storyURLs.size} found.\n"
-
-    # Now you have a link to the "Chapter 1" page of each story. For each "Chapter 1" 
-    # page, look for a SELECT box that will provide links to any other chapters. Add 
-    # them all to a new array of pages.
-    print 'Finding pages...'
-    pageURLs = []
-    storyURLs.each do |chapterOneURL|
-      # The URL we already have is a valid page, so add that first
-      pageURLs << chapterOneURL
-      
-      # Now go looking for others
-      begin
-        chapterOneHTML = Nokogiri::HTML(open(chapterOneURL, 'User-Agent' => USER_AGENT))
-        sleep(PAGE_DELAY)
-        optionElements = chapterOneHTML.css("select\##{CHAPTER_SELECT_ID} option")
-        optionElements.each do |option|
-          # Figure out what the URL for that page would be
-          chapterURL = chapterOneURL.sub(/\/1\//, "\/#{option['value']}\/")
-          # Add to the page URLs list if it's not already in there
-          if !pageURLs.include?(chapterURL)
-            print '.'
-            pageURLs << chapterURL
-          end
-        end
-      rescue
-        print "\nFailed to load and parse a page. Carrying on..."
-      end
-      
-    end
-    print " #{pageURLs.size} found.\n"
-    
-    # Limit the number of pages found if necessary
-    if pageURLs.size > MAX_PAGES
-      print "Restricting page list to #{MAX_PAGES} to avoid a huge data set.\n"
-      pageURLs = pageURLs[0..(MAX_PAGES-1)]
-    end
-    
     # For each page URL, load the page and extract sentences.
     print 'Extracting sentences'
-    pageURLs.each do |pageURL|
+    Dir.foreach(FILES_DIR) do |file|
+      next if file == '.' or file == '..'
       print '.'
-      begin
-        pageHTML = Nokogiri::HTML(open(pageURL, 'User-Agent' => USER_AGENT))
-        sleep(PAGE_DELAY)
-        paragraphs = pageHTML.css("div\##{STORY_TEXT_ID} p")
-        paragraphs.each_with_index do |para, pi|
+      lineNum = 0
+      linesInFile = File.foreach("#{FILES_DIR}#{file}").inject(0) {|c, line| c+1}
+        File.open("#{FILES_DIR}#{file}").each_line do |line|
           # Take the contents of each <p> element, remove linebreaks and scan for 
           # sentences
-          tmpSentences = para.text.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
+          tmpSentences = line.tr("\n"," ").tr("\r"," ").scan(SENTENCE_REGEX)
           tmpSentences.each_with_index do |tmpSentence, i|
             # Check for 'banned' words, only proceed if they are not present
             if !(BANNED_WORDS.any? { |word| tmpSentence.include?(word) })
               # Based on the sentence's position and content, decide what type it is and
               # thus into which bucket it goes.
-              if (pi == 0) && (i == 0)
+              if (lineNum == 0) && (i == 0)
                 @sentences[:startChapters] << tmpSentence
-              elsif (pi == paragraphs.size - 1) && (i == tmpSentences.size - 1)
+              elsif (lineNum == linesInFile - 1) && (i == tmpSentences.size - 1)
                 @sentences[:endChapters] << tmpSentence
               elsif tmpSentence.include? '"'
                 @sentences[:dialogue] << tmpSentence
@@ -215,13 +136,10 @@ if FETCH_LIVE_DATA
               end
             end
           end
+          lineNum += 1
         end
-      rescue
-        print "\nFailed to load and parse a page. Carrying on..."
-      end
     end
     print " #{@sentences[:startChapters].size + @sentences[:endChapters].size + @sentences[:startParagraphs].size + @sentences[:midParagraphs].size + @sentences[:endParagraphs].size + @sentences[:solitary].size + @sentences[:dialogue].size} found.\n"
-  end
   
   # Serialise the data to disk for later use
   print "Saving data to #{DATA_CACHE_FILE_NAME}..."
