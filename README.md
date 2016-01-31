@@ -7,7 +7,7 @@ A script to automatically generate a 50,000-word "novel" during November, as an 
 
 My script automatically scrapes user-submitted stories from FanFiction.net, mashes them together and remixes them into something almost entirely devoid of meaning.
 
-You can see an example of what it generates at http://ianrenton.github.io/NaNoGenMo/example.html
+You can see an example of what it generates at [http://ianrenton.github.io/NaNoGenMo/example.html](http://ianrenton.github.io/NaNoGenMo/example.html).
 
 Usage
 -----
